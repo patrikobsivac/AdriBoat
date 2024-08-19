@@ -4,26 +4,29 @@
     <hr>
     <br>
     <v-row>
-      <v-col v-for="boat in boats">
+      <v-col v-for="boat in boats" :key="boat.id">
         <v-card
           class="mx-auto"
           max-width="350"
           color="#e9e8eb"
         >
           <v-img
-            :src="/"
+            :src="boat.imageUrl"
             height="180px"
             class="image-border"
           ></v-img>
 
+          <v-card-title>
+            {{ boat.boatName }}
+          </v-card-title>
 
           <v-card-subtitle>
-            Cijena: {{ formatThousands() }} €
+            Cijena: {{ formatThousands(boat.cijena) }} €
           </v-card-subtitle>
 
           <v-card-actions>
             <v-btn
-              @click="setStates()"
+              @click="setStates(boat.id)"
               color="red"
               text
             >
@@ -39,14 +42,47 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+//import HelloWorld from '@/components/HelloWorld.vue'
 export default {
   name: 'HomeView',
-  components: {
-    HelloWorld
-} 
+  data: () => ({
+    boats: [
+      {
+        id: 1,
+        boatName: "2018 Eolo Day 830",
+        cijena: 115000.00,
+        imageUrl: "https://images.boatsgroup.com/resize/1/94/52/2018-eolo-day-830-power-689452-20240713110352886-0_XLARGE.jpg"
+      },
+      {
+        id: 2,
+        boatName: "2022 AquaSpirit S585 CC",
+        cijena: 46550.00,
+        imageUrl: "https://images.boatsgroup.com/resize/1/36/41/2022-aquaspirit-s585-cc-power-623641-20240702121411427-0_XLARGE.jpg"
+      },
+      {
+        id: 3,
+        boatName: "2023 Regal LS2",
+        cijena: 108000.00,
+        imageUrl: "https://images.boatsgroup.com/resize/1/11/89/2023-regal-ls2-681189-20240622061504041-0_XLARGE.jpg"
+      },
+      {
+        id: 4,
+        boatName: "2007 Windy Grand Bora 42",
+        cijena: 177000.00,
+        imageUrl: "https://images.boatsgroup.com/resize/1/37/33/423733_20220805032532461_0_XLARGE.jpg"
+      },
+      {
+        id: 5,
+        boatName: "2021 Jeanneau CAP CAMARAT",
+        cijena: 325000.00,
+        imageUrl: "https://images.boatsgroup.com/resize/1/21/41/2021-jeanneau-cap-camarat-125-wa-power-9502141-20240811045825764-1_XLARGE.jpg"
+      },
+      {
+        id: 6,
+        boatName: "2021 Technohull Explorer 40",
+        cijena: 365000.00,
+        imageUrl: "https://images.boatsgroup.com/resize/1/5/94/2021-technohull-explorer-40-power-9340594-20240415040739016-1_XLARGE.jpg"
+      }
 </script>
 
 <style scoped>
