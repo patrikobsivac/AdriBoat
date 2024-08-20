@@ -42,7 +42,7 @@
 </template>
 
 <script>
-//import HelloWorld from '@/components/HelloWorld.vue'
+import { mapGetters, mapMutations } from "vuex";
 export default {
   name: 'HomeView',
   data: () => ({
@@ -83,6 +83,27 @@ export default {
         cijena: 365000.00,
         imageUrl: "https://images.boatsgroup.com/resize/1/5/94/2021-technohull-explorer-40-power-9340594-20240415040739016-1_XLARGE.jpg"
       }
+    ]
+  }),
+
+  methods: {
+    ...mapMutations({ setBoatIme: "setBoatIme", setBoatCijena: "setBoatCijena" }),
+
+    formatThousands(res) {
+      return new Intl.NumberFormat('en-US').format(res);
+    },
+
+    setStates(boatId) {
+      this.setBoatIme(this.boats.find(boat => boat.id === boatId).boatName);
+      this.setBoatCijena(this.boats.find(boat => boat.id === boatId).cijena);
+      this.$router.push({ name: 'boatDetails', params: { id: boatId } });
+    }
+  },
+
+  computed: {
+    ...mapGetters({ getBoatIme: 'getBoatIme' })
+  }
+}
 </script>
 
 <style scoped>
