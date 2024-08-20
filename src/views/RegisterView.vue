@@ -1,66 +1,92 @@
 <template>
-	<v-container fill-height fluid class="background">
+	<v-container fill-height fluid class="bg-light">
 		<v-row align="center" justify="center">
 			<v-col align="center" justify="center" cols="12">
-				<v-card class="card-border" width="600px" outlined>
-					<v-card-title align="left">Registracija firme</v-card-title>
-					<v-card-text>
+				<v-card class="custom-card" width="500px" outlined>
+					<v-card-title align="left" class="primary--text">Registracija</v-card-title>
+					<v-card-subtitle align="left">
+						Unesite podatke za registraciju
+					</v-card-subtitle>
+					<v-card-text class="custom-card-text">
 						<v-form v-model="valid">
 							<v-text-field
-								v-model="companyName"
+								v-model="fullName"
 								dense
-								label="Ime firme"
-								clearble
-								type="text"
+								label="Ime i prezime"
+								clearable
+								:rules="[rules.required]"
 								outlined></v-text-field>
 							<v-text-field
-								v-model="ownerFullName"
-								dense
-								label="Ime i prezime vlasnika"
-								clearble
-								type="text"
-								outlined></v-text-field>
-                                <v-text-field
 								v-model="userOIB"
 								dense
 								label="OIB"
-								clearble
-								type="integer"
+								clearable
+								type="text"
+								:rules="[rules.required, rules.oib]"
 								outlined></v-text-field>
 							<v-text-field
 								v-model="email"
 								dense
-								label="E-mail firme"
-								clearble
+								label="E-mail"
+								clearable
 								type="email"
 								:rules="[rules.required, rules.email]"
+								outlined></v-text-field>
+							<v-text-field
+								v-model="phoneNumber"
+								dense
+								label="Broj telefona"
+								clearable
+								type="tel"
+								:rules="[rules.required, rules.phoneNumber]"
+								outlined></v-text-field>
+							<v-text-field
+								v-model="street"
+								dense
+								label="Ulica"
+								clearable
+								:rules="[rules.required]"
+								outlined></v-text-field>
+							<v-text-field
+								v-model="city"
+								dense
+								label="Mjesto"
+								clearable
+								:rules="[rules.required]"
+								outlined></v-text-field>
+							<v-text-field
+								v-model="postalCode"
+								dense
+								label="Poštanski broj"
+								clearable
+								type="text"
+								:rules="[rules.required, rules.postalCode]"
 								outlined></v-text-field>
 							<v-text-field
 								v-model="password"
 								dense
 								label="Zaporka"
-								clearble
-								:append-icon="
-									showIcon ? 'mdi-eye' : 'mdi-eye-off'
-								"
+								clearable
+								:append-icon="showIcon ? 'mdi-eye' : 'mdi-eye-off'"
 								:rules="[rules.required, rules.min]"
 								:type="showIcon ? 'text' : 'password'"
+								@click:append="togglePasswordVisibility"
 								outlined></v-text-field>
 						</v-form>
 					</v-card-text>
-					<v-card-actions class="card-actions">
+					<v-card-actions class="custom-card-actions">
 						<v-btn
-							class="btn-right-margin"
-							@click="clearFormData"
 							color="red darken-3"
-							outlined>
-							CLEAR
+							outlined
+							@click="clearFormData">
+							Očisti
 						</v-btn>
 						<v-btn
 							:disabled="isButtonDisabled"
 							outlined
+							color="primary"
 							@click="registerUser">
-							OK
+							Potvrdi
 						</v-btn>
 					</v-card-actions>
 				</v-card>
