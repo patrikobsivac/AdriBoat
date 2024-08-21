@@ -98,11 +98,122 @@
 </template>
 
 <script>
+import { doc, auth, db, setDoc, createUserWithEmailAndPassword } from "../../firebase.js";
 export default {
-    
-}
+	name: "RegisterView",
+	data() {
+		return {
+			isButtonDisabled: false,
+			valid: true,
+			fullName: null,
+			userOIB: null,
+			email: null,
+			password: null,
+			phoneNumber: null,
+			street: null,
+			city: null,
+			postalCode: null,
+			showIcon: false,
+			rules: {
+				required: (value) => !!value || "Ovo polje je obavezno",
+				min: (v) => v?.length >= 6 || "Zaporka mora imati najmanje 6 znakova!",
+				email: (v) =>
+					!v ||
+					/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+					"E-mail mora biti valjan",
+				oib: (v) => /^\d{11}$/.test(v) || "OIB mora sadržavati 11 znamenki!",
+				phoneNumber: (v) =>
+					/^\+?(\d.*){3,}$/.test(v) || "Broj telefona mora biti valjan!",
+				postalCode: (v) =>
+					/^\d{5}$/.test(v) || "Poštanski broj mora sadržavati 5 znamenki!",
+			},
+		};
+	},
+	watch: {
+		valid(newVal) {
+			this.isButtonDisabled = !newVal;
+		},
+	},
+	methods: {
+		clearFormData() {
+			this.fullName = null;
+			this.userOIB = null;
+			this.email = null;
+			this.password = null;
+			this.phoneNumber = null;
+			this.street = null;
+			this.city = null;
+			this.postalCode = null;
+		},
+		postActionMoveToView() {
+			this.$router.push({ path: "/" });
+		},
+		async saveAdditionalData(user, email, fullName, userOIB, phoneNumber, street, city, postalCode) {
+			await setDoc(doc(db, "users", email), {
+				Email: email,
+				FullName: fullName,
+				OIB: userOIB,
+				PhoneNumber: phoneNumber,
+				Street: street,
+				City: city,
+				PostalCode: postalCode,
+				AuthorisationType: "USER",
+			});
+		},
+		registerUser() {
+			const email = this.email;
+			const password = this.password;
+			createUserWithEmailAndPassword(auth, email, password)
+				.then((userCredential) => {
+					const user = userCredential.user;
+					const fullName = this.fullName;
+					const userOIB = this.userOIB;
+					const phoneNumber = this.phoneNumber;
+					const street = this.street;
+					const city = this.city;
+					const postalCode = this.postalCode;
+					this.saveAdditionalData(user, email, fullName, userOIB, phoneNumber, street, city, postalCode);
+					this.postActionMoveToView();
+				})
+				.catch((error) => {
+					alert("Error: " + error.message);
+				});
+		},
+		togglePasswordVisibility() {
+			this.showIcon = !this.showIcon;
+		},
+	},
+};
 </script>
 
-<style scoped>
 
+<style scoped>
+.bg-light {
+	background-color: #f4f4f4;
+}
+
+.custom-card {
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.primary--text {
+	color: #1e88e5 !important;
+}
+
+.custom-card-text {
+	padding-top: 20px;
+}
+
+.custom-card-actions {
+	justify-content: flex-end;
+}
+
+.text-left {
+	margin-left: 0;
+}
+
+.text-right {
+	margin-right: 0;
+}
 </style>
