@@ -98,94 +98,66 @@
 </template>
 
 <script>
-import { doc, auth, db, setDoc, createUserWithEmailAndPassword } from "../../firebase.js";
+import { auth, sendPasswordResetEmail, signInWithEmailAndPassword } from "../../firebase.js";
 export default {
-	name: "RegisterView",
+	name: 'LoginPage',
 	data() {
 		return {
-			isButtonDisabled: false,
-			valid: true,
-			fullName: null,
-			userOIB: null,
-			email: null,
-			password: null,
-			phoneNumber: null,
-			street: null,
-			city: null,
-			postalCode: null,
-			showIcon: false,
-			rules: {
+			emailForPasswordReset: null,
+			passwordResetDialog: false,
+			disableLoginButton: false,
+			isValid: true,
+			userEmail: null,
+			userPassword: null,
+			togglePassword: false,
+			fieldRules: {
 				required: (value) => !!value || "Ovo polje je obavezno",
-				min: (v) => v?.length >= 6 || "Zaporka mora imati najmanje 6 znakova!",
+				minLength: (v) => v?.length >= 6 || "Lozinka mora imati najmanje 6 znakova",
 				email: (v) =>
 					!v ||
 					/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-					"E-mail mora biti valjan",
-				oib: (v) => /^\d{11}$/.test(v) || "OIB mora sadržavati 11 znamenki!",
-				phoneNumber: (v) =>
-					/^\+?(\d.*){3,}$/.test(v) || "Broj telefona mora biti valjan!",
-				postalCode: (v) =>
-					/^\d{5}$/.test(v) || "Poštanski broj mora sadržavati 5 znamenki!",
+					"Neispravna e-mail adresa!",
 			},
 		};
 	},
-	watch: {
-		valid(newVal) {
-			this.isButtonDisabled = !newVal;
-		},
-	},
 	methods: {
-		clearFormData() {
-			this.fullName = null;
-			this.userOIB = null;
-			this.email = null;
-			this.password = null;
-			this.phoneNumber = null;
-			this.street = null;
-			this.city = null;
-			this.postalCode = null;
-		},
-		postActionMoveToView() {
-			this.$router.push({ path: "/" });
-		},
-		async saveAdditionalData(user, email, fullName, userOIB, phoneNumber, street, city, postalCode) {
-			await setDoc(doc(db, "users", email), {
-				Email: email,
-				FullName: fullName,
-				OIB: userOIB,
-				PhoneNumber: phoneNumber,
-				Street: street,
-				City: city,
-				PostalCode: postalCode,
-				AuthorisationType: "USER",
-			});
-		},
-		registerUser() {
-			const email = this.email;
-			const password = this.password;
-			createUserWithEmailAndPassword(auth, email, password)
-				.then((userCredential) => {
-					const user = userCredential.user;
-					const fullName = this.fullName;
-					const userOIB = this.userOIB;
-					const phoneNumber = this.phoneNumber;
-					const street = this.street;
-					const city = this.city;
-					const postalCode = this.postalCode;
-					this.saveAdditionalData(user, email, fullName, userOIB, phoneNumber, street, city, postalCode);
-					this.postActionMoveToView();
+		submitLogin() {
+			const { userEmail, userPassword } = this;
+			signInWithEmailAndPassword(auth, userEmail, userPassword)
+				.then(() => {
+					this.$router.push("/");
 				})
 				.catch((error) => {
 					alert("Error: " + error.message);
 				});
 		},
+		sendResetLink(email) {
+			sendPasswordResetEmail(auth, email)
+				.then(() => {
+					alert("Link za poništavanje lozinke je poslano");
+				})
+				.catch((error) => {
+					alert("Error: " + error.message);
+				});
+			this.closePasswordDialog();
+		},
 		togglePasswordVisibility() {
-			this.showIcon = !this.showIcon;
+			this.togglePassword = !this.togglePassword;
+		},
+		closePasswordDialog() {
+			this.passwordResetDialog = false;
+		},
+		showPasswordDialog() {
+			this.passwordResetDialog = true;
+		},
+	},
+	watch: {
+		isValid(newVal) {
+			this.disableLoginButton = !newVal;
 		},
 	},
 };
 </script>
-
 
 <style scoped>
 .bg-light {
