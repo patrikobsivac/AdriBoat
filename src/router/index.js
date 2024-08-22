@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
+import BoatDetailsView from '../views/BoatDetailsView .vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/prijava',
     name: 'LoginView',
     component: LoginView
+  },
+  {
+      path: '/boat/:id',
+      name: 'boatDetails',
+      component: BoatDetailsView
   },
   {
     path: '/about',
