@@ -1,20 +1,58 @@
 <template>
-    <div>
-      <h1>Detalji</h1>
-      <div v-if="selectedBoat">
-        <h2>{{ selectedBoat.name }}</h2>
-        <img :src="selectedBoat.image" alt="Boat Image" style="max-width: 500px; margin: 20px;">
-        <ul style="font-size: 18px;">
-          <li>Year: {{ selectedBoat.year }}</li>
-          <li>Brand: {{ selectedBoat.brand }}</li>
-          <li>Model: {{ selectedBoat.model }}</li>
-          <li>Type: {{ selectedBoat.type }}</li>
-          <li>Length: {{ selectedBoat.length }}</li>
-          <li>Fuel Type: {{ selectedBoat.fuelType }}</li>
-        </ul>
-      </div>
-    </div>
-  </template>
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="8">
+        <v-card>
+          <v-img :src="selectedBoat.image" height="400px"></v-img>
+          <v-card-title class="headline">{{ selectedBoat.name }}</v-card-title>
+          <v-card-subtitle>{{ selectedBoat.year }} | {{ selectedBoat.brand }}</v-card-subtitle>
+          <v-card-text>
+            <v-list dense>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Model</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.model }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Vrsta</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.type }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Dužina</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.length }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Fuel Type</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.fuelType }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-card>
+          <v-card-title class="headline">Kontaktirajte Prodavača</v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-text-field label="Ime i prezime" v-model="form.name"></v-text-field>
+              <v-text-field label="Telefon" v-model="form.phone"></v-text-field>
+              <v-text-field label="E-mail" v-model="form.email"></v-text-field>
+              <v-textarea label="Pitanja/komentari" v-model="form.comments"></v-textarea>
+              <v-btn color="red" @click="contactSeller">Kontaktirati Prodavača</v-btn>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
   
   <script>
   export default {
