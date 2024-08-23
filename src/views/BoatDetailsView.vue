@@ -55,6 +55,8 @@
 </template>
   
   <script>
+  import { db, getAuth, onAuthStateChanged } from "firebase/auth";
+  import { addDoc, collection } from 'firebase/firestore/lite';
   export default {
     data() {
       return {
@@ -126,12 +128,57 @@
             fuelType: 'Gasoline'
           }
         ],
-        selectedBoat: null
+        selectedBoat: null,
+      form: {
+        name: '',
+        phone: '',
+        email: '',
+        comments: ''
+      },
+    }
+  },
+  mounted() {
+    const id = this.$route.params.id;
+    this.selectedBoat = this.boats.find(boat => boat.id === parseInt(id));
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
       }
-    },
-    mounted() {
-      const id = this.$route.params.id;
-      this.selectedBoat = this.boats.find(boat => boat.id === parseInt(id));
+    });
+  },
+  methods: {
+    async submitForm() {
+      const formIsValid = this.$refs.formRef.validate();
+      if (!formIsValid) {
+        return;
+      }
+
+      try {
+        const formData = {
+          name: this.form.name,
+          phone: this.form.phone,
+          email: this.form.email,
+          comments: this.form.comments,
+          selectedBoat: this.selectedBoat
+        };
+
+        const docRef = await addDoc(collection(db, 'boatDetails'), formData);
+        console.log('Podaci su uspješno spremljeni s ID-om:', docRef.id);
+
+        this.form.name = '';
+        this.form.phone = '';
+        this.form.email = '';
+        this.form.comments = '';
+        this.selectedBoat = null;
+        this.$refs.formRef.reset();
+      } catch (error) {
+        console.error('Pogreška pri spremanju podataka:', error);
+      }
     }
   }
-  </script>
+};
+</script>
