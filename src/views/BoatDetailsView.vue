@@ -22,8 +22,32 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
+                  <v-list-item-title>Garancija Trupa</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.hullWarranty }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Nudi</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.offers }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Opis</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.description }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
                   <v-list-item-title>Dužina</v-list-item-title>
                   <v-list-item-subtitle>{{ selectedBoat.length }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Materijal Trupa</v-list-item-title>
+                  <v-list-item-subtitle>{{ selectedBoat.hullMaterial }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
@@ -68,9 +92,13 @@
             year: 2018,
             brand: 'Eolo',
             model: 'Day 830',
-            type: 'Power',
-            length: '8.3m',
-            fuelType: 'Gasoline'
+            type: 'Bowrider Plovila',
+            length: '9m',
+            fuelType: 'Plinski',
+            hullMaterial: 'Stakloplastika',       
+            hullWarranty: '5 godina',     
+            offers: 'Privatni prodavač', 
+            description: 'Plaćena zimnica do travnja 2025., mogućnost preuzimanja veza.' 
           },
           {
             id: 2,
@@ -79,9 +107,13 @@
             year: 2022,
             brand: 'AquaSpirit',
             model: 'S585 CC',
-            type: 'Power',
+            type: 'Kruti Sportski Gumenjaci',
             length: '5.85m',
-            fuelType: 'Gasoline'
+            fuelType: 'Plinski',
+            hullMaterial: 'Fiberglass',       
+            hullWarranty: '5 godina',     
+            offers: 'Privatni prodavač', 
+            description: 'Prvo zalijevanje 07/2023. Brod je 2022. godine, korišten samo za odmor, stanje kao novo, Maksimalni broj osoba: 8. Brod, motor i prikolica još uvijek imaju punu garanciju!' 
           },
           {
             id: 3,
@@ -90,9 +122,12 @@
             year: 2023,
             brand: 'Regal',
             model: 'LS2',
-            type: 'Power',
-            length: '6.8m',
-            fuelType: 'Gasoline'
+            type: 'Sportska Plovila',
+            length: '6.81m',
+            fuelType: 'Plinski',
+            hullMaterial: 'Stakloplastika',     
+            offers: 'Privatni prodavač', 
+            description: 'Istražite luksuz u Regal bowrideru bez premca u svom luksuzu i stilu. LS2 podiže ljestvicu onoga što brod od 22′ može i treba biti.' 
           },
           {
             id: 4,
@@ -101,20 +136,27 @@
             year: 2007,
             brand: 'Windy',
             model: 'Grand Bora 42',
-            type: 'Sail',
-            length: '12.8m',
-            fuelType: 'Diesel'
+            type: 'Motorne Jahte',
+            length: '12m',
+            fuelType: 'Dizel',
+            hullMaterial: 'Kompozitni Materijal',          
+            offers: 'Privatni prodavač', 
+            description: 'Elegantna, sportska motorna jahta proizvedena u renomiranom norveškom brodogradilištu Windy Boats, poznata po visokoj kvaliteti izrade i izvrsnim performansama na vodi. Model Grand Bora 42 dio je popularne Windy serije, spajajući luksuz s iznimnim manevarskim sposobnostima.' 
           },
           {
             id: 5,
             name: 'Jeanneau CAP CAMARAT',
             image: 'https://images.boatsgroup.com/resize/1/21/41/2021-jeanneau-cap-camarat-125-wa-power-9502141-20240811045825764-1_XLARGE.jpg',
             year: 2021,
-            brand: 'Jeanneau',
+            brand: 'Jweanneau',
             model: 'CAP CAMARAT',
-            type: 'Power',
-            length: '12.5m',
-            fuelType: 'Gasoline'
+            type: 'Center Console Plovila',
+            length: '11.90m',
+            fuelType: 'Dizel',
+            hullMaterial: 'Kompozitni Materijal',         
+            hullWarranty: '10 godina',     
+            offers: 'ALL YACHT MONTE-CARLO - ALL YACHT MC', 
+            description: 'Luksuzni, višenamjenski kruzer sportskog karaktera, kreiran u renomiranom francuskom brodogradilištu Jeanneau. Ovo je plovilo iz linije Cap Camarat poznato po visokoj kvaliteti izrade, inovativnim rješenjima i izvrsnim performansama.' 
           },
           {
             id: 6,
@@ -123,9 +165,13 @@
             year: 2021,
             brand: 'Technohull',
             model: 'Explorer 40',
-            type: 'Power',
-            length: '12m',
-            fuelType: 'Gasoline'
+            type: 'Kruti Sportski Gumenjaci',
+            length: '12.10m',
+            fuelType: 'Plinski',
+            hullMaterial: 'Stakloplastika',     
+            hullWarranty: '5 godina',     
+            offers: 'Riginos Yachts SA', 
+            description: 'Luksuzni, brzi motornog tipa RIB (kruto gumeni) iz brodogradilišta Technohull, poznatog po klasi rekreacijskih i sportskih plovila. Dizajniran je imajući na umu performanse, udobnost i svestranost.' 
           }
         ],
         selectedBoat: null,
