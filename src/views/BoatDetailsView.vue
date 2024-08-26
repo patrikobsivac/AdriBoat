@@ -22,7 +22,7 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>Garancija Trupa</v-list-item-title>
+                  <v-list-item-title>Garancija trupa</v-list-item-title>
                   <v-list-item-subtitle>{{ selectedBoat.hullWarranty }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -34,26 +34,26 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>Opis</v-list-item-title>
-                  <v-list-item-subtitle>{{ selectedBoat.description }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>
                   <v-list-item-title>Dužina</v-list-item-title>
                   <v-list-item-subtitle>{{ selectedBoat.length }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>Materijal Trupa</v-list-item-title>
+                  <v-list-item-title>Materijal trupa</v-list-item-title>
                   <v-list-item-subtitle>{{ selectedBoat.hullMaterial }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>Fuel Type</v-list-item-title>
+                  <v-list-item-title>Tip goriva</v-list-item-title>
                   <v-list-item-subtitle>{{ selectedBoat.fuelType }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Opis</v-list-item-title>
+                  <v-list-item-subtitle style="white-space: pre-line">{{ selectedBoat.description }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -68,7 +68,7 @@
               <v-text-field label="Ime i prezime" v-model="form.name"></v-text-field>
               <v-text-field label="Telefon" v-model="form.phone"></v-text-field>
               <v-text-field label="E-mail" v-model="form.email"></v-text-field>
-              <v-textarea label="Pitanja/komentari" v-model="form.comments"></v-textarea>
+              <v-textarea label="Pitanja/komentari" v-model="form.comments" placeholder="Zanima me više informacija o *naziv plovila*. Molim kontaktirajte me. "></v-textarea>
               <v-btn color="red" @click="contactSeller">Kontaktirati Prodavača</v-btn>
             </v-form>
           </v-card-text>
@@ -125,7 +125,8 @@
             type: 'Sportska Plovila',
             length: '6.81m',
             fuelType: 'Plinski',
-            hullMaterial: 'Stakloplastika',     
+            hullMaterial: 'Stakloplastika',
+            hullWarranty: '10 godina',      
             offers: 'Privatni prodavač', 
             description: 'Istražite luksuz u Regal bowrideru bez premca u svom luksuzu i stilu. LS2 podiže ljestvicu onoga što brod od 22′ može i treba biti.' 
           },
@@ -139,7 +140,8 @@
             type: 'Motorne Jahte',
             length: '12m',
             fuelType: 'Dizel',
-            hullMaterial: 'Kompozitni Materijal',          
+            hullMaterial: 'Kompozitni Materijal', 
+            hullWarranty: '10 godina',          
             offers: 'Privatni prodavač', 
             description: 'Elegantna, sportska motorna jahta proizvedena u renomiranom norveškom brodogradilištu Windy Boats, poznata po visokoj kvaliteti izrade i izvrsnim performansama na vodi. Model Grand Bora 42 dio je popularne Windy serije, spajajući luksuz s iznimnim manevarskim sposobnostima.' 
           },

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Istaknuti plovila</h1>
+    <h1>Istaknuta plovila</h1>
     <hr>
     <br>
     <v-row>
