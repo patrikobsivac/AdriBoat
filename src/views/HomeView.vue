@@ -32,7 +32,7 @@
             >
               Zatražite informacije
             </v-btn>
-			
+
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations} from "vuex";
 export default {
   name: 'HomeView',
   data: () => ({
@@ -99,6 +99,15 @@ export default {
       this.$router.push({ name: 'boatDetails', params: { id: boatId } });
     }
   },
+
+  mutations: {
+  setBoatIme(state, boatIme) {
+    state.boatIme = boatIme;
+  },
+  setBoatCijena(state, boatCijena) {
+    state.boatCijena = boatCijena;
+  }
+},
 
   computed: {
     ...mapGetters({ getBoatIme: 'getBoatIme' })
