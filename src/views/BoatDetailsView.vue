@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="8">
-        <v-card>
+        <v-card v-if="selectedBoat">
           <v-img :src="selectedBoat.image" height="400px"></v-img>
           <v-card-title class="headline">{{ selectedBoat.name }}</v-card-title>
           <v-card-subtitle>{{ selectedBoat.year }} | {{ selectedBoat.brand }}</v-card-subtitle>
@@ -59,17 +59,18 @@
             </v-list>
           </v-card-text>
         </v-card>
+        <v-alert v-else type="error">Nema podataka za odabrani brod.</v-alert>
       </v-col>
       <v-col cols="12" md="4">
         <v-card>
           <v-card-title class="headline">Kontaktirajte prodavača</v-card-title>
           <v-card-text>
-            <v-form>
-              <v-text-field :rules="[v => !!v || 'Ime i prezime je obavezan']" label="Ime i prezime" v-model="form.name" required @input="updateNameSurname"></v-text-field>
+            <v-form ref="form">
+              <v-text-field :rules="[v => !!v || 'Obavezan!']" label="Ime i prezime" v-model="form.name" required @input="updateNameSurname"></v-text-field>
               <v-text-field label="Telefon" v-model="form.phone" @input="updatePhoneNumber"></v-text-field>
-              <v-text-field :rules="[v => !!v || 'E-mail je obavezan']" label="E-mail" v-model="form.email" required @input="updateEmail"></v-text-field>
+              <v-text-field :rules="[v => !!v || 'Obavezan!']" label="E-mail" v-model="form.email" required @input="updateEmail"></v-text-field>
               <v-textarea label="Pitanja/komentari" v-model="form.comments" placeholder="Zanima me više informacija o *naziv plovila*. Molim kontaktirajte me." @input="updateComments"></v-textarea>
-              <v-btn :disabled="!valid" color="red" @click="submitForm">Kontaktirati Prodavača</v-btn>
+              <v-btn color="red" @click="submitForm">Kontaktirati Prodavača</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -185,44 +186,15 @@ export default {
     }
   },
   computed: {
+    selectedBoat() {
+      return this.boats.find(boat => boat.id === parseInt(this.$route.params.id));
+    },
     ...mapGetters([
       'getNameSurname',
       'getPhoneNumber',
       'getEmail',
       'getComments'
-    ]),
-    NameSurname: {
-      get() {
-        return this.getNameSurname;
-      },
-      set(value) {
-        this.updateNameSurname(value);
-      },
-    },
-    phone: {
-      get() {
-        return this.getPhoneNumber;
-      },
-      set(value) {
-        this.updatePhoneNumber(value);
-      },
-    },
-    email: {
-      get() {
-        return this.getEmail;
-      },
-      set(value) {
-        this.updateEmail(value);
-      },
-    },
-    comments: {
-      get() {
-        return this.getComments;
-      },
-      set(value) {
-        this.updateComments(value);
-      },
-    },
+    ])
   },
   methods: {
     ...mapActions([
@@ -240,20 +212,20 @@ export default {
 
         try {
           const docRef = await addDoc(collection(db, "requests"), {
-            NameSurname: this.NameSurname,
-            phoneNumber: this.phoneNumber,
+            NameSurname: this.getNameSurname,
+            phoneNumber: this.getPhoneNumber,
             email: userEmail,
-            comments: this.comments,
+            comments: this.getComments,
             user: userEmail,
             createdAt: new Date(),
           });
 
           this.$router.push({ name: 'SuccessView', params: { requestId: docRef.id } });
         } catch (e) {
-          console.error("Error adding document: ", e);
+          console.error("Pogreška pri dodavanju dokumenta: ", e);
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>

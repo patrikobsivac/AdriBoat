@@ -4,35 +4,13 @@
     <hr>
     <br>
     <v-row>
-      <v-col v-for="boat in boats" :key="boat.id">
-        <v-card
-          class="mx-auto"
-          max-width="350"
-          color="#e9e8eb"
-        >
-          <v-img
-            :src="boat.imageUrl"
-            height="180px"
-            class="image-border"
-          ></v-img>
-
-          <v-card-title>
-            {{ boat.boatName }}
-          </v-card-title>
-
-          <v-card-subtitle>
-            Cijena: {{ formatThousands(boat.cijena) }} €
-          </v-card-subtitle>
-
+      <v-col v-for="boat in boats" :key="boat.id" cols="12" md="4">
+        <v-card class="mx-auto" max-width="350" color="#e9e8eb">
+          <v-img :src="boat.imageUrl" height="180px" class="image-border"></v-img>
+          <v-card-title>{{ boat.boatName }}</v-card-title>
+          <v-card-subtitle>Cijena: {{ formatThousands(boat.cijena) }} €</v-card-subtitle>
           <v-card-actions>
-            <v-btn
-              @click="setStates(boat.id)"
-              color="red"
-              text
-            >
-              Zatražite informacije
-            </v-btn>
-
+            <v-btn @click="setStates(boat.id)" color="red" text>Zatražite informacije</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -42,7 +20,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations} from "vuex";
+import { mapMutations } from "vuex";
 export default {
   name: 'HomeView',
   data: () => ({
@@ -86,33 +64,22 @@ export default {
     ]
   }),
 
-  methods: {
-    ...mapMutations({ setBoatIme: "setBoatIme", setBoatCijena: "setBoatCijena" }),
-
+   methods: {
+    ...mapMutations({
+      setBoatIme: "setBoatIme",
+      setBoatCijena: "setBoatCijena"
+    }),
     formatThousands(res) {
       return new Intl.NumberFormat('en-US').format(res);
     },
-
     setStates(boatId) {
-      this.setBoatIme(this.boats.find(boat => boat.id === boatId).boatName);
-      this.setBoatCijena(this.boats.find(boat => boat.id === boatId).cijena);
+      const selectedBoat = this.boats.find(boat => boat.id === boatId);
+      this.setBoatIme(selectedBoat.boatName);
+      this.setBoatCijena(selectedBoat.cijena);
       this.$router.push({ name: 'boatDetails', params: { id: boatId } });
     }
-  },
-
-  mutations: {
-  setBoatIme(state, boatIme) {
-    state.boatIme = boatIme;
-  },
-  setBoatCijena(state, boatCijena) {
-    state.boatCijena = boatCijena;
   }
-},
-
-  computed: {
-    ...mapGetters({ getBoatIme: 'getBoatIme' })
-  }
-}
+};
 </script>
 
 <style scoped>
