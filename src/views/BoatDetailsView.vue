@@ -62,14 +62,14 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-card>
-          <v-card-title class="headline">Kontaktirajte Prodavača</v-card-title>
+          <v-card-title class="headline">Kontaktirajte prodavača</v-card-title>
           <v-card-text>
             <v-form>
-              <v-text-field label="Ime i prezime" v-model="form.name"></v-text-field>
-              <v-text-field label="Telefon" v-model="form.phone"></v-text-field>
-              <v-text-field label="E-mail" v-model="form.email"></v-text-field>
-              <v-textarea label="Pitanja/komentari" v-model="form.comments" placeholder="Zanima me više informacija o *naziv plovila*. Molim kontaktirajte me. "></v-textarea>
-              <v-btn color="red" @click="contactSeller">Kontaktirati Prodavača</v-btn>
+              <v-text-field :rules="[v => !!v || 'Ime i prezime je obavezan']" label="Ime i prezime" v-model="form.name" required @input="updateNameSurname"></v-text-field>
+              <v-text-field label="Telefon" v-model="form.phone" @input="updatePhoneNumber"></v-text-field>
+              <v-text-field :rules="[v => !!v || 'E-mail je obavezan']" label="E-mail" v-model="form.email" required @input="updateEmail"></v-text-field>
+              <v-textarea label="Pitanja/komentari" v-model="form.comments" placeholder="Zanima me više informacija o *naziv plovila*. Molim kontaktirajte me." @input="updateComments"></v-textarea>
+              <v-btn :disabled="!valid" color="red" @click="submitForm">Kontaktirati Prodavača</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -78,12 +78,14 @@
   </v-container>
 </template>
   
-  <script>
-  import { db, getAuth, onAuthStateChanged } from "firebase/auth";
-  import { addDoc, collection } from 'firebase/firestore/lite';
-  export default {
+<script>
+import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { mapGetters, mapActions } from 'vuex';
+export default {
     data() {
       return {
+        valid: false,
         boats: [
           {
             id: 1,
@@ -110,7 +112,7 @@
             type: 'Kruti Sportski Gumenjaci',
             length: '5.85m',
             fuelType: 'Plinski',
-            hullMaterial: 'Fiberglass',       
+            hullMaterial: 'Stakloplastika',       
             hullWarranty: '5 godina',     
             offers: 'Privatni prodavač', 
             description: 'Prvo zalijevanje 07/2023. Brod je 2022. godine, korišten samo za odmor, stanje kao novo, Maksimalni broj osoba: 8. Brod, motor i prikolica još uvijek imaju punu garanciju!' 
@@ -125,8 +127,7 @@
             type: 'Sportska Plovila',
             length: '6.81m',
             fuelType: 'Plinski',
-            hullMaterial: 'Stakloplastika',
-            hullWarranty: '10 godina',      
+            hullMaterial: 'Stakloplastika',     
             offers: 'Privatni prodavač', 
             description: 'Istražite luksuz u Regal bowrideru bez premca u svom luksuzu i stilu. LS2 podiže ljestvicu onoga što brod od 22′ može i treba biti.' 
           },
@@ -140,8 +141,7 @@
             type: 'Motorne Jahte',
             length: '12m',
             fuelType: 'Dizel',
-            hullMaterial: 'Kompozitni Materijal', 
-            hullWarranty: '10 godina',          
+            hullMaterial: 'Kompozitni Materijal',          
             offers: 'Privatni prodavač', 
             description: 'Elegantna, sportska motorna jahta proizvedena u renomiranom norveškom brodogradilištu Windy Boats, poznata po visokoj kvaliteti izrade i izvrsnim performansama na vodi. Model Grand Bora 42 dio je popularne Windy serije, spajajući luksuz s iznimnim manevarskim sposobnostima.' 
           },
@@ -176,7 +176,6 @@
             description: 'Luksuzni, brzi motornog tipa RIB (kruto gumeni) iz brodogradilišta Technohull, poznatog po klasi rekreacijskih i sportskih plovila. Dizajniran je imajući na umu performanse, udobnost i svestranost.' 
           }
         ],
-        selectedBoat: null,
       form: {
         name: '',
         phone: '',
@@ -185,48 +184,76 @@
       },
     }
   },
-  mounted() {
-    const id = this.$route.params.id;
-    this.selectedBoat = this.boats.find(boat => boat.id === parseInt(id));
-
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.isLoggedIn = true;
-      } else {
-        this.isLoggedIn = false;
-      }
-    });
+  computed: {
+    ...mapGetters([
+      'getNameSurname',
+      'getPhoneNumber',
+      'getEmail',
+      'getComments'
+    ]),
+    NameSurname: {
+      get() {
+        return this.getNameSurname;
+      },
+      set(value) {
+        this.updateNameSurname(value);
+      },
+    },
+    phone: {
+      get() {
+        return this.getPhoneNumber;
+      },
+      set(value) {
+        this.updatePhoneNumber(value);
+      },
+    },
+    email: {
+      get() {
+        return this.getEmail;
+      },
+      set(value) {
+        this.updateEmail(value);
+      },
+    },
+    comments: {
+      get() {
+        return this.getComments;
+      },
+      set(value) {
+        this.updateComments(value);
+      },
+    },
   },
   methods: {
+    ...mapActions([
+      'updateNameSurname',
+      'updatePhoneNumber',
+      'updateEmail',
+      'updateComments',
+    ]),
     async submitForm() {
-      const formIsValid = this.$refs.formRef.validate();
-      if (!formIsValid) {
-        return;
+      if (this.$refs.form.validate()) {
+        const db = getFirestore();
+        const auth = getAuth();
+        const user = auth.currentUser;
+        let userEmail = user ? user.email : this.email;
+
+        try {
+          const docRef = await addDoc(collection(db, "requests"), {
+            NameSurname: this.NameSurname,
+            phoneNumber: this.phoneNumber,
+            email: userEmail,
+            comments: this.comments,
+            user: userEmail,
+            createdAt: new Date(),
+          });
+
+          this.$router.push({ name: 'SuccessView', params: { requestId: docRef.id } });
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
       }
-
-      try {
-        const formData = {
-          name: this.form.name,
-          phone: this.form.phone,
-          email: this.form.email,
-          comments: this.form.comments,
-          selectedBoat: this.selectedBoat
-        };
-
-        const docRef = await addDoc(collection(db, 'boatDetails'), formData);
-        console.log('Podaci su uspješno spremljeni s ID-om:', docRef.id);
-
-        this.form.name = '';
-        this.form.phone = '';
-        this.form.email = '';
-        this.form.comments = '';
-        this.selectedBoat = null;
-        this.$refs.formRef.reset();
-      } catch (error) {
-        console.error('Pogreška pri spremanju podataka:', error);
-      }
-    }
-  }
+    },
+  },
 };
 </script>

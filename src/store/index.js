@@ -1,78 +1,47 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { addDoc, collection, query, where, getDocs } from 'firebase/firestore/lite';
-import { db } from '../../firebase.js';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    selectedBoat: null,
-    formData: {
-      name: '',
-      phone: '',
-      email: '',
-      comments: ''
-    },
-    documentId: null,
+    name: '',
+    phone: '',
+    email: '',
+    comments: '',
   },
   mutations: {
-    SET_FORM_DATA(state, payload) {
-      state.formData = payload;
+    setNameSurname(state, name) {
+      state.firstName = name;
     },
-    SET_DOCUMENT_ID(state, documentId) {
-      state.documentId = documentId;
+    setPhoneNumber(state, phone) {
+      state.phone = phone;
     },
-    RESET_FORM(state) {
-      state.formData = {
-        name: '',
-        phone: '',
-        email: '',
-        comments: ''
-      };
-      state.selectedBoat = null;
-    }
+    setEmail(state, email) {
+      state.email = email;
+    },
+    setComments(state, comments) {
+      state.comments = comments;
+    },
   },
   actions: {
-    async submitForm({ commit, state }) {
-      try {
-        const formData = {
-          ...state.formData,
-          selectedBoat: state.selectedBoat
-        };
-
-        const docRef = await addDoc(collection(db, 'boatDetails'), formData);
-        commit('SET_DOCUMENT_ID', docRef.id);
-        commit('RESET_FORM');
-
-        return docRef.id;
-      } catch (error) {
-        console.error('Error saving data:', error);
-        throw error;
-      }
+    updateNameSurname({ commit }, name) {
+      commit('setNameSurname', name);
     },
-
-    async fetchDocumentId({ commit, state }) {
-      const collectionName = 'boatDetails';
-      const q = query(collection(db, collectionName),
-        where('name', '==', state.formData.name),
-        where('phone', '==', state.formData.phone),
-        where('email', '==', state.formData.email),
-        where('comments', '==', state.formData.comments),
-        where('selectedBoat', '==', state.selectedBoat));
-
-      const querySnapshot = await getDocs(q);
-      let documentId = null;
-
-      querySnapshot.forEach((doc) => {
-        documentId = doc.id;
-      });
-
-      commit('SET_DOCUMENT_ID', documentId);
-    }
+    updatePhoneNumber({ commit }, phone) {
+      commit('setPhoneNumber', phone);
+    },
+    updateEmail({ commit }, email) {
+      commit('setEmail', email);
+    },
+    updateComments({ commit }, comments) {
+      commit('setComments', comments);
+    },
   },
   getters: {
-    getFormData: (state) => state.formData,
-    getDocumentId: (state) => state.documentId
-  }
+    getNameSurname: state => state.name,
+    getPhoneNumber: state => state.phone,
+    getEmail: state => state.email,
+    getComments: state => state.comments,
+  },
 });
