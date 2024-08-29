@@ -1,41 +1,32 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="#2a272d"
-      dark
-    >
+    <v-app-bar app color="#2a272d" dark>
       <div class="d-flex align-center">
         <v-btn href="/" class="mr-2">
-          <v-img
-            alt="Logo"
-            class="shrink"
-            contain
-            src="./assets/boat.svg"
-            width="40"
-          />
+          <v-img alt="Logo" class="shrink" contain src="./assets/boat.svg" width="40"/>
         </v-btn>
 
-      <v-btn href="/" text color="grey lighten-8" class="text-h6">
+        <v-btn text color="grey lighten-8" class="text-h6">
           AdriBoat
         </v-btn>
       </div>
     
-    <v-col align="right">
-      <v-btn text class="pa-3" color="grey lighten-6" to="/prijava" v-if="!isUserAuthenticated">
-        Login
-      </v-btn>
-      &nbsp; | 
-      <v-btn text class="pa-3" color="grey lighten-6" to="/registracija" v-if="!isUserAuthenticated">
+      <v-col align="right">
+        <v-btn text class="pa-3" color="red lighten-6" to="/" v-if="!isUserAuthenticated"><v-icon left>mdi-plus</v-icon>
+          Mjesto Oglasa
+        </v-btn>
+        <v-btn text class="pa-3" color="grey lighten-6" to="/prijava" v-if="!isUserAuthenticated">
+          Login
+        </v-btn>
+        &nbsp; | 
+        <v-btn text class="pa-3" color="grey lighten-6" to="/registracija" v-if="!isUserAuthenticated">
           Register
         </v-btn>
-      <v-btn text class="pa-3" color="red lighten-8" v-else @click="Logout()" href="/">
-        Logout
-      </v-btn>
-    </v-col>
-
+        <v-btn text class="pa-3" color="red lighten-8" v-else @click="handleLogout" href="/">
+          Logout
+        </v-btn>
+      </v-col>
     </v-app-bar>
-
     <v-main>
       <router-view/>
     </v-main>
@@ -63,7 +54,6 @@ export default {
           this.isUserAuthenticated = false;
         }
       });
-
     },
 
     handleLogout() {

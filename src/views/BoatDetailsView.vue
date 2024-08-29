@@ -59,30 +59,33 @@
             </v-list>
           </v-card-text>
         </v-card>
-        <v-alert v-else type="error">Nema podataka za odabrani brod.</v-alert>
       </v-col>
       <v-col cols="12" md="4">
         <v-card>
           <v-card-title class="headline">Kontaktirajte prodavača</v-card-title>
           <v-card-text>
-            <v-form ref="form">
-              <v-text-field :rules="[v => !!v || 'Obavezan!']" label="Ime i prezime" v-model="form.name" required @input="updateNameSurname"></v-text-field>
-              <v-text-field label="Telefon" v-model="form.phone" @input="updatePhoneNumber"></v-text-field>
-              <v-text-field :rules="[v => !!v || 'Obavezan!']" label="E-mail" v-model="form.email" required @input="updateEmail"></v-text-field>
-              <v-textarea label="Pitanja/komentari" v-model="form.comments" placeholder="Zanima me više informacija o *naziv plovila*. Molim kontaktirajte me." @input="updateComments"></v-textarea>
+            <v-form>
+              <v-text-field :rules="[v => !!v || 'Obavezan!']" label="Ime i prezime" v-model="name" required></v-text-field>
+              <v-text-field label="Telefon" v-model="phone"></v-text-field>
+              <v-text-field :rules="[v => !!v || 'Obavezan!']" label="E-mail" v-model="email" required></v-text-field>
+              <v-textarea label="Pitanja/komentari" v-model="comments" placeholder="Zanima me više informacija o *naziv plovila*. Molim kontaktirajte me."></v-textarea>
               <v-btn color="red" @click="submitForm">Kontaktirati Prodavača</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :timeout="5000"> 
+      {{ snackbarText }}
+      <v-btn color="red" text @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
   
 <script>
-import { getFirestore, addDoc, collection } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { mapGetters, mapActions } from 'vuex';
+import { db, auth } from "../../firebase.js";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore/lite";
+import { onAuthStateChanged } from "firebase/auth";
 export default {
     data() {
       return {
@@ -177,55 +180,55 @@ export default {
             description: 'Luksuzni, brzi motornog tipa RIB (kruto gumeni) iz brodogradilišta Technohull, poznatog po klasi rekreacijskih i sportskih plovila. Dizajniran je imajući na umu performanse, udobnost i svestranost.' 
           }
         ],
-      form: {
         name: '',
         phone: '',
         email: '',
-        comments: ''
-      },
-    }
+        comments: '',
+        snackbar: false,
+        snackbarText: ''
+    };
   },
   computed: {
     selectedBoat() {
       return this.boats.find(boat => boat.id === parseInt(this.$route.params.id));
     },
-    ...mapGetters([
-      'getNameSurname',
-      'getPhoneNumber',
-      'getEmail',
-      'getComments'
-    ])
   },
   methods: {
-    ...mapActions([
-      'updateNameSurname',
-      'updatePhoneNumber',
-      'updateEmail',
-      'updateComments',
-    ]),
     async submitForm() {
-      if (this.$refs.form.validate()) {
-        const db = getFirestore();
-        const auth = getAuth();
-        const user = auth.currentUser;
-        let userEmail = user ? user.email : this.email;
-
-        try {
-          const docRef = await addDoc(collection(db, "requests"), {
-            NameSurname: this.getNameSurname,
-            phoneNumber: this.getPhoneNumber,
-            email: userEmail,
-            comments: this.getComments,
-            user: userEmail,
-            createdAt: new Date(),
-          });
-
-          this.$router.push({ name: 'SuccessView', params: { requestId: docRef.id } });
-        } catch (e) {
-          console.error("Pogreška pri dodavanju dokumenta: ", e);
+      try {
+        if (!this.name || !this.email) {
+          throw new Error("Molim ispunite obavezna polja.");
         }
+
+        const docRef = await addDoc(collection(db, "brodZahtjev"), {
+          boatId: this.selectedBoat.id,
+          naziv: this.selectedBoat.name,
+          nameSurname: this.name,
+          phone: this.phone,
+          email: this.email,
+          comments: this.comments,
+          timestamp: serverTimestamp(),
+        });
+
+        this.snackbarText = `Upit uspješno poslan! ID dokumenta: ${docRef.id}, Brod: ${this.selectedBoat.name}`;
+        this.snackbar = true;
+        this.resetForm();
+      } catch (error) {
+        console.error("Greška prilikom slanja upita: ", error);
+        alert(`Greška prilikom slanja upita | ${error.message}`);
       }
-    }
-  }
+    },
+    resetForm() {
+      this.name = "";
+      this.phone = "";
+      this.email = "";
+      this.comments = "";
+    },
+  },
+  created() {
+    onAuthStateChanged(auth, (user) => {
+      this.user = user;
+    });
+  },
 };
 </script>

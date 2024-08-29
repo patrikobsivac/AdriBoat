@@ -4,7 +4,6 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import BoatDetailsView from '../views/BoatDetailsView.vue'
-import SuccessView from '@/views/SuccessView.vue'
 
 Vue.use(VueRouter)
 
@@ -25,14 +24,9 @@ const routes = [
     component: LoginView
   },
   {
-      path: '/boat/:id',
-      name: 'boatDetails',
-      component: BoatDetailsView
-  },
-  {
-    path: '/success',
-    name: 'SuccessView',
-    component: SuccessView
+    path: '/boat/:id',
+    name: 'boatDetails',
+    component: BoatDetailsView
   },
   {
     path: '/about',
