@@ -40,7 +40,7 @@
 							outlined
 							small
 							color="teal darken-1"
-							to="/registracija_firme">
+							to="/registracija">
 							Niste registrirani? Kliknite ovdje
 						</v-btn>
 					</v-card-text>

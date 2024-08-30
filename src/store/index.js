@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import boats from './modules/boats';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  modules: {
+    boats
+  },
   state: {
     name: '',
     phone: '',

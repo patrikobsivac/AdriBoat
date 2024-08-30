@@ -12,8 +12,8 @@
       </div>
     
       <v-col align="right">
-        <v-btn text class="pa-3" color="red lighten-6" to="/" v-if="!isUserAuthenticated"><v-icon left>mdi-plus</v-icon>
-          Mjesto Oglasa
+        <v-btn text class="pa-3" color="red lighten-8" @click="objaviOglas"><v-icon left>mdi-plus</v-icon>
+          Predaj Oglas
         </v-btn>
         <v-btn text class="pa-3" color="grey lighten-6" to="/prijava" v-if="!isUserAuthenticated">
           Login
@@ -55,6 +55,16 @@ export default {
         }
       });
     },
+
+    objaviOglas() {
+    if (!this.isUserAuthenticated) {
+      alert("Morate se prijaviti kako bi objavili oglas!");
+      this.$router.push("/prijava");
+    } else {
+      // kod za objavu oglasa...
+      this.$router.push("/submit");
+    }
+  },
 
     handleLogout() {
       try {

@@ -4,6 +4,8 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import BoatDetailsView from '../views/BoatDetailsView.vue'
+import SubmitPostView from '../views/SubmitPostView.vue'
+import { auth } from '../../firebase';
 
 Vue.use(VueRouter)
 
@@ -29,6 +31,14 @@ const routes = [
     component: BoatDetailsView
   },
   {
+    path: '/submit',
+    name: 'SubmitPostView',
+    component: SubmitPostView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting
@@ -43,5 +53,13 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !auth.currentUser) {
+    next('/prijava');
+  } else {
+    next();
+  }
+});
 
 export default router
